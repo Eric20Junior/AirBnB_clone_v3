@@ -67,6 +67,25 @@ test_file_storage.py'])
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
 
+    def test_fs_storage_get(self):
+        '''
+            Check if instance gotten for DBStorage
+        '''
+        new_o = State(name="Cali")
+        obj = storage.get("State", "fake_id")
+        self.assertIsNone(obj)
+
+    def test_fs_storage_count(self):
+        '''
+            Check total count of objs in DBStorage
+        '''
+        storage.reload()
+        all_count = self.storage.count()
+        self.assertIsInstance(all_count, int)
+        cls_count = self.storage.count("State")
+        self.assertIsInstance(cls_count, int)
+        self.assertGreaterEqual(all_count, cls_count)
+
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
