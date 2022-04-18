@@ -6,23 +6,40 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+import hashlib
 
 
 class User(BaseModel, Base):
     """Representation of a user """
-    if models.storage_t == 'db':
         __tablename__ = 'users'
+        if getenv("HBNB_TYPE_STORAGE", "fs") == "db":
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
-        places = relationship("Place", backref="user")
-        reviews = relationship("Review", backref="user")
+        places = relationship("Place", backref="user",
+                              cascade="all, delete, delete-orphan")
+        reviews = relationship("Review", backref="user",
+                               cascade="all, delete, delete-orphan")
     else:
         email = ""
         password = ""
         first_name = ""
         last_name = ""
+
+    @property
+    def password(self):
+        '''
+            return hashed password
+        '''
+        return self._password
+
+    @password.setter
+    def password(self, value):
+        '''
+            fset the password with hash
+        '''
+        self._password = hashlib.md5(value.encode('utf8')).hexdigest()
 
     def __init__(self, *args, **kwargs):
         """initializes user"""
