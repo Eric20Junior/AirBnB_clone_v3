@@ -130,3 +130,10 @@ class TestUser(unittest.TestCase):
         user = User()
         string = "[User] ({}) {}".format(user.id, user.__dict__)
         self.assertEqual(string, str(user))
+
+    def test_type_password(self):
+        '''
+            test tje type of password
+        '''
+        name = getattr(self.new_user, "password")
+        self.assertIsInstance(name, str)
